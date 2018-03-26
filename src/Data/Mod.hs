@@ -31,7 +31,7 @@ value :: Mod a -> Int
 value (Mod x) = x
 
 
-divisor :: KnownNat a => proxy a -> Int
+divisor :: KnownNat a => m a -> Int
 divisor = fromIntegral . natVal
 
 
