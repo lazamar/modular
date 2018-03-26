@@ -1,8 +1,8 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE DataKinds #-}
 
 
 import Control.Exception (evaluate)
+import Data.Mod (Mod, divisor, op, toMod, value)
 import Lib
 import Test.Hspec
 import Test.QuickCheck
@@ -13,14 +13,14 @@ type ModType = Mod 13
 
 main :: IO ()
 main = hspec $ do
-  describe "Mod" $ do
+  describe "Mod" $
     it "applies modulo on value construction" $
         property $
             \x ->
                 let
-                    Mod v = toMod x :: ModType
+                    a = toMod x :: ModType
                 in
-                    v == x `mod` 13
+                    value a == x `mod` divisor a
   describe "Group" $ do
     it "has an associative gadd operation" $
         property $
@@ -81,9 +81,9 @@ main = hspec $ do
                 let
                     a = toMod x :: ModType
                     b = toMod y :: ModType
-                    Mod r = prod a b
+                    r = prod a b
                 in
-                    r == (x * y) `mod` 13
+                    value r == (x * y) `mod` divisor a
 
     it "has an associative product" $
         property $
@@ -109,5 +109,5 @@ main = hspec $ do
                 let
                     a = toMod x :: ModType
                 in
-                    mod x 13 /= 0 ==>
+                    mod x (divisor a) /= 0 ==>
                     fmap (prod a) (inv a) == Just one
